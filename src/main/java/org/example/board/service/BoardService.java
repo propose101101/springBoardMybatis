@@ -17,7 +17,8 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     public void save(BoardDTO boardDTO) throws IOException {
-        if (boardDTO.getBoardFile() == null || boardDTO.getBoardFile().isEmpty()) {
+        if (boardDTO.getBoardFile().get(0).isEmpty()) {
+            //file이 없다면
             boardDTO.setFileAttached(0);
             boardRepository.save(boardDTO);
         } else {
@@ -28,7 +29,7 @@ public class BoardService {
             for (MultipartFile boardFile : boardDTO.getBoardFile()) {
                 String originalFilename = boardFile.getOriginalFilename();
                 String storedFileName = System.currentTimeMillis() + "-" + originalFilename;
-                String savePath = "C:/Temp/" + storedFileName;
+                String savePath = "C:/Temp/uploads/" + storedFileName;
 
                 boardFile.transferTo(new File(savePath));
 
@@ -62,5 +63,9 @@ public class BoardService {
 
     public void delete(long id) {
         boardRepository.delete(id);
+    }
+
+    public List<BoardFileDTO> findFile(long id) {
+        return boardRepository.findFile(id);
     }
 }

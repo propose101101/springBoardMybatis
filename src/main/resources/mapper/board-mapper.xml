@@ -4,8 +4,8 @@
 
 <mapper namespace="Board">
     <insert id="save" parameterType="board" useGeneratedKeys="true" keyProperty="id">
-        insert into board_table(boardTitle, boardWriter, boardPass, boardContents)
-        values ( #{boardTitle} , #{boardWriter}, #{boardPass}, #{boardContents})
+        insert into board_table(boardTitle, boardWriter, boardPass, boardContents, fileAttached)
+        values ( #{boardTitle} , #{boardWriter}, #{boardPass}, #{boardContents}, #{fileAttached})
     </insert>
     <select id="findAll" resultType="board">
         select * from board_table order by id desc
@@ -15,7 +15,8 @@
     </update>
     <select id="findById" parameterType="Long"  resultType="board">
         select id, boardTitle, boardWriter, boardPass,boardContents, boardHits,
-        date_format(createdAt, "%Y-%m-%d %H:%i:%s") as createdAt from board_table where id =#{id}
+        date_format(createdAt, "%Y-%m-%d %H:%i:%s") as createdAt, fileAttached
+        from board_table where id =#{id}
     </select>
     <update id="update">
         update board_table set boardTitle = #{boardTitle} , boardContents = #{boardContents} where id =#{id}
@@ -29,4 +30,8 @@
         insert into board_file_table(originalFileName, storedFileName, boardId)
         values (#{originalFileName}, #{storedFileName}, #{boardId})
     </insert>
+
+    <select id="findFile" parameterType="Long" resultType="boardFile">
+        select * from board_file_table where boardId = #{id}
+    </select>
 </mapper>

@@ -2,6 +2,7 @@ package org.example.board.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.board.dto.BoardDTO;
+import org.example.board.dto.BoardFileDTO;
 import org.example.board.service.BoardService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +27,7 @@ public class BoardController {
     public String save(BoardDTO boardDTO) throws IOException {
         System.out.println("boardDTO = " + boardDTO);
         boardService.save(boardDTO);
-        return "index";
+        return "list";
     }
 
     @GetMapping("/list")
@@ -43,6 +44,16 @@ public class BoardController {
 
         BoardDTO boardDTO = boardService.findById(id);
         model.addAttribute("board", boardDTO);
+
+        System.out.println("id = " + id + ", model = " + model);
+
+        //file이 있으면
+        if(boardDTO.getFileAttached() == 1){
+            //BoardFileDTO boardFileDTO = boardService.findFile(id);
+            //model.addAttribute("boardFile", boardFileDTO);
+            List<BoardFileDTO> boardFileDTOList = boardService.findFile(id);
+            model.addAttribute("boardFileList", boardFileDTOList);
+        }
         return "detail";
     }
 
